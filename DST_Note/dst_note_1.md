@@ -13,7 +13,7 @@ inst.components.container:WidgetSetup("newpot")
 
 ## 容器的UI
 
-上面为预制物注册了叫>"newpot"<的容器,下面可以在modmain中来写UI:
+上面为预制物注册了叫`"newpot"`的容器,下面可以在modmain中来写UI:
 ```lua
 GLOBAL.setmetatable(env,{__index=function(t,k) return GLOBAL.rawget(GLOBAL,k) end})
 local params = {}
@@ -100,7 +100,7 @@ inst.buttonfn = buttonfn
 ```
 buttonfn可以分两部分,一部分是判断食谱,一部分是开煮
 
-### 判断食谱
+## 判断食谱
 
 ```lua
 local function checkrecipe(inst,recipetab,boiltime,productname,productnum)
@@ -138,9 +138,9 @@ local function checkrecipe(inst,recipetab,boiltime,productname,productnum)
 end
 ```
 
-### 开始煮
+## 开始煮
 
-写煮饭函数>boiling(inst,boiltime,productname,productnum)<,
+写煮饭函数`boiling(inst,boiltime,productname,productnum)`
 ```lua
 local function boiling(inst,boiltime,productname,productnum)
     inst.Light:Enable(true) --烹煮时锅子开灯(如果有)
