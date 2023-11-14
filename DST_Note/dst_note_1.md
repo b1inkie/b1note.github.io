@@ -103,6 +103,14 @@ buttonfn可以分两部分,一部分是判断食谱,一部分是开煮
 ## 判断食谱
 
 ```lua
+--[[食谱样式
+local recipetab_sample = {
+	{"食材A","食材B"},
+	{},
+	{},
+}
+]]
+---------------
 local function checkrecipe(inst,recipetab,boiltime,productname,productnum)
 	----------------------(inst,食谱,烹煮时间,产品名,产品个数)
     local icc = inst.components.container
@@ -171,5 +179,20 @@ local function boiling(inst,boiltime,productname,productnum)
     inst.components.worldsettingstimer:AddTimer("newpot_boil", boiltime, true)
     inst.components.worldsettingstimer:StartTimer("newpot_boil", boiltime)
 
+end
+```
+
+## 测试buttonfn
+
+回到`buttonfn`添加下新食谱
+```lua
+local function buttonfn(inst)
+--食谱中:当某组原料中某一项与其他组内原料相同,则两组原料必须一致
+    local recipe_tomatoeggsoup = {
+        {"tomato","tomato_cooked"}, --生熟番茄都行
+        {"bird_egg","bird_egg_cooked"},
+        {"ice"},
+    }
+    checkrecipe(inst,recipe_tomatoeggsoup,30,"tomatoeggsoup",1)
 end
 ```
