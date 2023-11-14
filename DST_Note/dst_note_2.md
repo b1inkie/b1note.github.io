@@ -104,7 +104,8 @@ return upgradesys
 
 为人物添加一个可解锁的升级系统,杀死怪物,获得经验值(等同于怪物的血量),
 初始等级 `lv = 0`,
-对应等级的经验条总量为 `math.floor(10000*math.log10(lv+2))`
+对应等级的经验条总量为 `math.floor(10000*math.log10(lv+2))` 
+
 | 等级 | 经验条总量 |
 | ---- | ---- |
 | 0 | 3010 |
@@ -112,6 +113,7 @@ return upgradesys
 | 2 | 6020 |
 | 3 | 6989 |
 | 4 | 7781 |
+
 ```lua
 local upgradesys = Class(function(self, inst)
     self.inst = inst
