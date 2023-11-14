@@ -1,12 +1,5 @@
-![](./images/misc/tesv-logo.png)# Dovahkiin
-
-**TEST<i style="color:red;">TEST</i>TEST**
-
+![](./images/misc/tesv-logo.png)
+# Dovahkiin
 > 睡醒就写
-
-TEST
-
-**TEST `TEST` **
 ------
-
 ![](./images/misc/jade-sidebar.png)
