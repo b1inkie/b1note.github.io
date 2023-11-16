@@ -14,6 +14,7 @@
 5. AOE伤害(每攻击3次后5秒内的下一次攻击附带AOE伤害)
 6. 巨人杀手(对血量高于一定值并当前血量占比超过设定比例的怪物造成更多伤害)
 7. 怪物杀手(对特定怪造成更多伤害)
+8. 断筋(移动掉血)
 
 `scripts/components/elucidator_sys.lua`
 ```lua
@@ -21,6 +22,7 @@ local elucidator_sys = Class(function(self, inst)
     self.inst = inst
 
     self.combo = 0 --连击系统临时用一下
+
     self.aoe = 0 --AOE
 
     self.basis_weapon_panel_bonus = 0 --武器面板伤害计算依据
@@ -35,10 +37,19 @@ local elucidator_sys = Class(function(self, inst)
 
     self.beheaded_line = 0.2 --斩杀血量占比
     self.beheaded_dmg_mult = 1.2 --伤害倍率
+
     self.giantkiller_line = 0.9 --巨人杀手血量比例最低值
     self.giantkiller_dmg_mult = 1.4 --伤害倍率
+
+    self.init_hamstring_chance = 0.2 --断筋充能概率
+    self.hamstring_charge_stage = 0 --当前断筋充能层数
+    self.hamstring_charge_stage_max = 5 --允许下一击断筋的层数
+    self.hamstring_dmg = 8 --断筋伤害
+    self.hamstring_period_time = 0.01 --怪物被断筋后的检测频率
+    self.hamstring_last_time = 10 --断筋持续时间
+
     --设置对某种怪物造成更多伤害(该伤害应最后计算)
-    self.killer = {0} --这个表的每一项是对该项对应组别的怪物造成的额外伤害值
+    self.killer = {0}
 end,
 nil,
 {
@@ -59,13 +70,20 @@ function elucidator_sys:OnSave()
         beheaded_dmg_mult = self.beheaded_dmg_mult,
         giantkiller_line = self.giantkiller_line,
         giantkiller_dmg_mult = self.giantkiller_dmg_mult,
+
+        init_hamstring_chance = self.init_hamstring_chance,
+        hamstring_charge_stage = self.hamstring_charge_stage,
+        hamstring_charge_stage_max = self.hamstring_charge_stage_max,
+        hamstring_dmg = self.hamstring_dmg,
+        hamstring_period_time = self.hamstring_period_time,
+        hamstring_last_time = self.hamstring_last_time,
         killer = self.killer,
     }
     return data
 end
 function elucidator_sys:OnLoad(data)
-    self.combo = data.combo or 0
-    self.aoe = data.aoe or 0
+    self.combo = 0
+    self.aoe = 0
     self.basis_weapon_panel_bonus = data.basis_weapon_panel_bonus or 0
     self.weapon_panel_bonus = data.weapon_panel_bonus or 0
     self.init_critical_chance = data.init_critical_chance or 5
@@ -78,6 +96,13 @@ function elucidator_sys:OnLoad(data)
     self.beheaded_dmg_mult = data.beheaded_dmg_mult or 1.2
     self.giantkiller_line = data.giantkiller_line or 0.9
     self.giantkiller_dmg_mult = data.giantkiller_dmg_mult or 1.4
+
+    self.init_hamstring_chance = data.init_hamstring_chance or 0.2
+    self.hamstring_charge_stage = 0
+    self.hamstring_charge_stage_max = data.hamstring_charge_stage_max or 5
+    self.hamstring_dmg = data.hamstring_dmg or 8
+    self.hamstring_period_time = data.hamstring_period_time or 0.01
+    self.hamstring_last_time = data.hamstring_last_time or 5
     self.killer = data.killer or {0}
 end
 return elucidator_sys
@@ -157,10 +182,20 @@ end
 ## 最终伤害计算
 
 ```lua
+--
+local function tell(inst,line,content,last,colour)
+    if not colour then
+        colour = {1,1,1,1}
+    end
+    for k=1,line do
+        content = content.." \n "
+    end
+    inst.components.talker:Say(content,last,true,nil,nil,colour)
+end
+--
 ---------
 --伤害计算
 ---------
---以下的TUNING表用来表示各类伤害是否开启
 --[[
 TUNING.ELUCIDATOR_DMG = 27        --武器初始面板
 TUNING.ALLOW_COMBO_DMG = true     --连击
@@ -168,6 +203,7 @@ TUNING.ALLOW_CRITICAL_DMG = true  --暴击
 TUNING.ALLOW_BEHEADED = true      --斩杀(对低血量怪物造成更多伤害)
 TUNING.ALLOW_AOE = true           --AOE伤害(每攻击3次后5秒内的下一次攻击附带AOE伤害)
 TUNING.ALLOW_GIANT_KILLER = true  --巨人杀手(对血量高于一定值并当前血量占比超过设定比例的怪物造成更多伤害)
+TUNING.ALLOW_HAMSTRING = true     --断筋(移动后受伤)
 ]]
 function elucidator_sys:atk(inst,attacker,target,bottom)
     --建一个表存伤害倍率
@@ -178,22 +214,25 @@ function elucidator_sys:atk(inst,attacker,target,bottom)
     if TUNING.ALLOW_COMBO_DMG == true then 
         --连击的计算优先级高于暴击
         self.combo = math.min(self.combo+1,5) --每次攻击后连击数+1,最大为5
+        --将取消计时器任务写在计时器前面,这样每次攻击就会取消上一次的计时器
+        if inst.combo_atk_task ~= nil then 
+            inst.combo_atk_task:Cancel()
+            inst.combo_atk_task = nil
+        end
         inst.combo_atk_task = inst:DoTaskInTime(2, function()
             self.combo = 0
-            inst.combo_atk_task = nil
+            dmg_mult[1] = 1+0.05*self.combo
         end)
         dmg_mult[1] = 1+0.05*self.combo --连击数对伤害倍率的修正值
     end
     ----------------------------------------------
     --2--如果开启了暴击系统并造成了暴击,在该表设置暴击倍率
     dmg_mult[2] = 1
-    if TUNING.ALLOW_CRITICAL_DMG==true and math.random(0,bottom)<=self.critical_chance then 
+    if TUNING.ALLOW_CRITICAL_DMG==true and math.random(0,1)<=self.critical_chance then 
         dmg_mult[2] = self.critical_dmg_mult 
         --暴击提示和音效
-        if attacker.SoundEmitter and attacker.components.talker then
             attacker.SoundEmitter:PlaySound("dontstarve/common/whip_large")
-            attacker.components.talker:Say("暴击!".." \n ".." \n ".." \n ")
-        end
+            tell(inst,3,"暴击!",1,{.9,.1,.1,1})
         --暴击特效
         local fx = SpawnPrefab("impact") 
         fx.Transform:SetScale(math.random(1,5), math.random(1,5), math.random(1,5))
@@ -214,7 +253,10 @@ function elucidator_sys:atk(inst,attacker,target,bottom)
     dmg_mult[4] = 1
     if TUNING.ALLOW_GIANT_KILLER == true then
         if target.components.health and target.components.health:GetPercent() >= self.giantkiller_line then
-            dmg_mult[4] = self.giantkiller_dmg_mult            
+            dmg_mult[4] = self.giantkiller_dmg_mult
+            local fx_gaint = SpawnPrefab("fx_boat_pop")
+            fx_gaint.Transform:SetScale(0.1*math.random(5,13), 0.1*math.random(5,13), 0.1*math.random(5,13))
+            fx_gaint.Transform:SetPosition(target.Transform:GetWorldPosition())
         end
     end
     -------------------------------------------
@@ -224,16 +266,42 @@ function elucidator_sys:atk(inst,attacker,target,bottom)
         killer_dmg = 0
     end
     -------------------------------
-    --AOE(每攻击3次后5秒内的下一次攻击附带AOE伤害)
-    if TUNING.ALLOW_AOE = true then 
-        self.aoe = self.aoe+1
-        if self.aoe == 3 then
-            attacker.components.combat:SetAreaDamage(2, 1) --(range,percent)
-            attacker.aoe_task = attacker:DoTaskInTime(5, function()
-                attacker.components.combat:SetAreaDamage(0, 0)
-                self.aoe = 0
-                attacker.aoe_task = nil
-            end)
+    --断筋(需要充能,每次攻击有20%几率充能,充能五次,下一次攻击可以断筋)
+    if TUNING.ALLOW_HAMSTRING == true then
+        if math.random(0,100) <= self.init_hamstring_chance*100 then
+            self.hamstring_charge_stage = self.hamstring_charge_stage + 1
+            if self.hamstring_charge_stage == self.hamstring_charge_stage_max+1 then
+                tell(inst,2,"断筋",2,{.5,0,.5,1})
+                local tar_coord = {}
+                if target then
+                    tar_coord[1], tar_coord[2], tar_coord[3] = target.Transform:GetWorldPosition()
+                end
+                local function checkMovement()
+                    if attacker and target and target.components and target.components.combat and target.components.health then
+                        local currentX, currentY, currentZ = target.Transform:GetWorldPosition()
+                        if tar_coord[1]~=nil and tar_coord[2]~=nil and tar_coord[3]~=nil then
+                            if tar_coord[1]~=currentX or tar_coord[2]~=currentY or tar_coord[3]~=currentZ then
+                                target.components.combat:GetAttacked(attacker, self.hamstring_dmg)
+                                tar_coord[1], tar_coord[2], tar_coord[3] = currentX, currentY, currentZ
+                                --target.components.health:DoDelta(-10)
+                                local fx_hamstring = SpawnPrefab("shadowstrike_slash_fx")
+                                fx_hamstring.Transform:SetScale(0.1*math.random(3,12),0.1*math.random(3,12),0.1*math.random(3,12))
+                                local fx_hamstring_pos = Vector3(target.Transform:GetWorldPosition())
+                                fx_hamstring.Transform:SetPosition(fx_hamstring_pos.x+0.3*math.random(1,5)-0.3*math.random(1,5),fx_hamstring_pos.y+0.3*math.random(1,5)-0.3*math.random(1,5),fx_hamstring_pos.z+0.3*math.random(1,5)-0.3*math.random(1,5))
+                            end
+                        end
+                    end
+                end
+                
+                inst.hamstring_task = inst:DoPeriodicTask(self.hamstring_period_time, checkMovement)
+                inst:DoTaskInTime(self.hamstring_last_time, function()
+                    if inst.hamstring_task ~= nil then
+                        inst.hamstring_task:Cancel()
+                        inst.hamstring_task = nil
+                    end
+                end)
+                self.hamstring_charge_stage = 0
+            end
         end
     end
     --------------------------------------------
@@ -253,15 +321,39 @@ function elucidator_sys:atk(inst,attacker,target,bottom)
     if bonus_dmg > 0 then
         target.components.combat:GetAttacked(attacker, bonus_dmg)
     end
+    -------------------------------
+    --AOE(每攻击3次后5秒内的下一次攻击附带AOE伤害)
+    local function DoAOEAtk(attacker,target,range,dmg)
+        local AREAATTACK_MUST_TAGS = { "_combat" }
+        local x, y, z = target.Transform:GetWorldPosition()
+        local ents = TheSim:FindEntities(x, y, z, range, AREAATTACK_MUST_TAGS)
+        for i, ent in ipairs(ents) do
+            if ent ~= target and ent ~= attacker and 
+                ent.components and ent.components.combat and ent.components.health and
+                not ent.components.combat:IsAlly(attacker) then
+                ent.components.combat:GetAttacked(attacker, dmg)
+            end
+        end
+    end
+    if TUNING.ALLOW_AOE == true then 
+        self.aoe = self.aoe+1
+        if self.aoe == 4 then --当第4次攻击时,取消倒计时,并在攻击后,将aoe计数器清零
+            if inst.aoe_task ~= nil then
+                inst.aoe_task:Cancel()
+                inst.aoe_task = nil
+            end
+            --设置AOE伤害
+            local aoe_dmg = (TUNING.ELUCIDATOR_DMG + self.weapon_panel_bonus)*1.3
+            DoAOEAtk(attacker,target,4,aoe_dmg)
+            self.aoe = 0
+        elseif self.aoe == 3 then --当攻击3次后,添加一个倒计时,时间到了将aoe计数器清零
+            inst.aoe_task = inst:DoTaskInTime(5, function()
+                self.aoe = 0
+                inst.aoe_task = nil
+            end)
+        end
+    end
 end
-```
-调用:
-回到武器预制物 `scripts/prefabs/mysword.lua`
-```lua
-local function onattack(inst, attacker, target)
-    inst.components.elucidator_sys:atk(inst,attacker,target,100)
-end
-inst.components.weapon.onattack = onattack
 ```
 
 ## 击晕(附赠)
