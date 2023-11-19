@@ -1,6 +1,6 @@
 ## 物品栏逐帧动画
 
-![essex_frame_dyn01](images/essex_frame_dyn01.gif)
+![essex_frame_dyn01](./images/essex_frame_dyn01.gif)
 
 顾名思义,多图循环,实现动画
 这个函数用来改图片 `inventory:ChangeImageName("")`
