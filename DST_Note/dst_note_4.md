@@ -23,7 +23,7 @@ XML写法:
 </Atlas>
 ```
 图片的切法:
-> $\color{aquamarine}{u1}$:宽起点 $\color{aquamarine}{u2}$:宽终点 $\color{lime}{v1}$:高起点 $\color{lime}{v2}$:高终点
+> <i style="color:aqua;">u1</i>:宽起点 <i style="color:aqua;">u2</i>:宽终点 <i style="color:lime;">v1</i>:高起点 <i style="color:lime;">v2</i>:高终点
 
 最后回到预制物:
 ```lua
