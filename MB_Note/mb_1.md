@@ -48,7 +48,7 @@
 troop_add_gold  = 1528 # (troop_add_gold,<troop_id>,<value>),
 ```
 那么我们想给玩家加100第纳尔就可以这样写：
-```python
+```Go
 (troop_add_gold,"trp_player",100),
 ```
 但我们在哪里给玩家加第纳尔呢，总得有个触发条件吧，就比如说当玩家背包里有风干肉itm_dried_meat的时候，就给玩家加100第纳尔，那我们可以这样写：
