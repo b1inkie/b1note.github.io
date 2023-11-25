@@ -7,6 +7,10 @@
   * [字符画](/DST_Note/dst_note_5.md)
   * [杂项](/DST_Note/dst_note_misc.md)
 
+- MB Note
+
+  *[初次见面](/MB_Note/mb_1.md)
+
 - LANG
   
   * [JP](/LANG/jp.md)
