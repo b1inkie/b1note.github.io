@@ -10,7 +10,8 @@
 - MB Note
 
   * [初次见面](/MB_Note/mb_1.md)
-
+  * [代码范例](/MB_Note/mb_2.md)
+  
 - LANG
   
   * [JP](/LANG/jp.md)
