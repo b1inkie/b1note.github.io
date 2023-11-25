@@ -58,15 +58,21 @@ troop_add_gold  = 1528 # (troop_add_gold,<troop_id>,<value>),
 ```
 源码写完了之后，我们需要把它编译成TXT，这时就需要用到MBCodeEditor，大家可以[点此下载](https://github.com/b1inkie/b1inkie.github.io/releases/download/1.0.0/MBCodeEditor.7z)
 打开MBCE，我们做个简单引导。
+
 ![](../images/mb-001.png)
+
 把MOD路径拷贝到地址栏，点一下LOAD MOD，提示读取成功就ok了，如果MBCE都读不出来，那你只能找作者要源码了。
-好，现在我们把写好的代码丢进Module_System_Code里面，再点一下Text_Code，便编译好了↓
+好，现在我们把写好的代码丢进Module_System_Code里面，再点一下Text_Code，便编译好了
+
 ![](../images/mb-002.png)
+
 最下面的Numbers of lines:2 表示代码一共有两行。
 好了，现在我们把它放进简单触发器simple_triggers里面↓
 打开simple_triggers，第二行的数字代表触发器的总数量，我们加一个这里就要加1。
 在最下面一行加上我们编译好的代码：
+
 <i style="color:red;">24.000000</i> <i style="color:yellow;">2</i> <i style="color:aqua;">150 1 288230376151711855 1528 2 360287970189639680 100</i>
+
 24代表每24小时检测一次，2代表代码总行数是2行，后面则是我们编译好的TXT了。
 那么游戏运行中每24小时就会检测一次玩家背包有没有风干肉，有的话就加100第纳尔给玩家。
 
