@@ -5,13 +5,14 @@
   * [武器伤害计算系统](/DST_Note/dst_note_3.md)
   * [物品栏逐帧动画](/DST_Note/dst_note_4.md)
   * [字符画](/DST_Note/dst_note_5.md)
+  * [添加配方](/DST_Note/dst_note_6.md)
   * [杂项](/DST_Note/dst_note_misc.md)
 
 - MB Note
 
   * [初次见面](/MB_Note/mb_1.md)
   * [代码范例](/MB_Note/mb_2.md)
-  
+
 - LANG
   
   * [JP](/LANG/jp.md)
