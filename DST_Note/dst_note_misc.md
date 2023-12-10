@@ -54,13 +54,7 @@ return bfnpack
 
 以自己为中心放射状采集附近农作物,并且采集时赠送一个对应的种子
 ```lua
-
-```
-
-## 自动拾取附近物品
-
-```lua
---caster为玩家自己
+--local caster
 for rangs = 1, 10 do
     inst:DoTaskInTime(rangs, function() 
         local ents = TheSim:FindEntities(pos.x,pos.y,pos.z,rangs*2)
@@ -82,6 +76,27 @@ for rangs = 1, 10 do
     end)
 end
 ```
+
+## 自动拾取附近物品
+
+```lua
+    local pos = Vector3(player.Transform:GetWorldPosition())
+    local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, 3)
+    for k, v in pairs(ents) do
+        if v.components.inventoryitem ~= nil and
+        v.components.inventoryitem.canbepickedup and
+        v.components.inventoryitem.cangoincontainer and
+        not v.components.inventoryitem:IsHeld() and 
+        not v:HasTag("trap") and not v:HasTag("light") and not v:HasTag("blowdart") and not v:HasTag("projectile") and not v:HasTag("custom_cantquickpick") and
+        player.components.inventory:CanAcceptCount(v, 1) > 0 then
+            SpawnPrefab("sand_puff").Transform:SetPosition(v.Transform:GetWorldPosition())
+
+            local v_pos = v:GetPosition()
+            player.components.inventory:GiveItem(v, nil, v_pos)
+            --return
+        end
+    end
+```
 `modmain.lua`
 ```lua
 --添加一些不可拾取的物品,例如马鞍,骑马时拾取马鞍会报错
@@ -100,7 +115,9 @@ for k,v in pairs(cantquickpicktab) do
 end
 ```
 
-## <h1 id="SpawnPrefabs_byStack">成组生成并抛出物品</h1>
+## 成组生成并抛出物品
+
+><i style="color:aqua;">成组生成并抛出预制物</i>
 
 ```lua
 function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
@@ -138,7 +155,22 @@ function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
 end
 ```
 
+><i style="color:aqua;">简单生成并抛出预制物</i>
+
+```lua
+function SpawnSinglePrefab_ThrowOut(tar,item)
+    local pt = Vector3(tar.Transform:GetWorldPosition()) + Vector3(0,4.5,0)
+    item.Transform:SetPosition(pt:Get())
+    local down = TheCamera:GetDownVec()
+    local angle = math.atan2(down.z, down.x) + (math.random()*60-30)*DEGREES
+    local sp = math.random()*4+2
+    item.Physics:SetVel(sp*math.cos(angle), math.random()*2+8, sp*math.sin(angle))
+end
+```
+
 ## 自定义打包袋物品
+
+><i style="color:aqua;">简易定义打包袋</i>
 
 ```lua
 --自定义打包袋物品,只有4个格子所以最多4个物品
@@ -152,6 +184,8 @@ pack_items = {
 local package = SpawnPrefab("gift")
 package.components.unwrappable:WrapItems(pack_items)
 ```
+
+><i style="color:aqua;">生成包裹并抛出或给予玩家</i>
 
 ```lua
 function WrapItems(target,SpawnAndThrowOut,GiveToTargetPlayer,...)
@@ -202,7 +236,8 @@ function WrapItems(target,SpawnAndThrowOut,GiveToTargetPlayer,...)
     gift.components.unwrappable:WrapItems(gift_tab)
     --抛出或给予玩家
     if SpawnAndThrowOut then
-        <a href="#SpawnPrefabs_byStack">SpawnSinglePrefab_ThrowOut(target,gift)</a>
+        --页内的函数
+        SpawnSinglePrefab_ThrowOut(target,gift) 
         return
     elseif GiveToTargetPlayer then
         if target and target.components and target.components.inventory then
@@ -221,47 +256,6 @@ end
 下面一例为交易换取金子
 
 ```lua
---按组生成预制物
-local function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
-    --一个通用的生成并抛出预制物的函数
-    local function SpawnPrefabs_Stack(inst,prefabname,nums)
-        local pos = Vector3(inst.Transform:GetWorldPosition()) + Vector3(0,4.5,0)
-        local prefab = SpawnPrefab(prefabname)
-        prefab.Transform:SetPosition(pos:Get())
-        local down = TheCamera:GetDownVec()
-        local angle = math.atan2(down.z, down.x) + (math.random()*60-30)*DEGREES
-        local sp = math.random()*4+2
-        prefab.Physics:SetVel(sp*math.cos(angle), math.random()*2+8, sp*math.sin(angle))
-        if prefab.components and prefab.components.stackable ~= nil and nums ~= 1 then
-            prefab.components.stackable.stacksize = nums
-        end
-    end
-
-    local prefab = SpawnPrefab(prefabname)
-    local prefab_maxsize = nil
-    local prefab_stacks = 0
-    local prefab_left = 0
-    if prefab.components and prefab.components.stackable ~= nil then
-        prefab_maxsize = prefab.components.stackable.maxsize
-        prefab_stacks = math.floor(prefabnum/prefab_maxsize)
-        prefab_left = prefabnum - prefab_stacks*prefab_maxsize
-    end
-
-    if prefab_maxsize ~= nil then
-        if prefab_stacks > 0 then
-            for k=1,prefab_stacks do
-                SpawnPrefabs_Stack(inst,prefabname,prefab_maxsize)
-            end
-        end
-        if prefab_left > 0 then
-            SpawnPrefabs_Stack(inst,prefabname,prefab_left)
-        end
-    else
-        for k=1,prefabnum do
-            SpawnPrefabs_Stack(inst,prefabname,1)
-        end
-    end
-end
 --交易金子
 local function DoTradeForGold(inst,giver,item)
     if item.components and item.components.tradable and item.components.tradable.goldvalue and item.components.tradable.goldvalue>0 then
@@ -276,10 +270,10 @@ local function DoTradeForGold(inst,giver,item)
                 total_goldvalue = activenums*item_goldvalue
             end
             giver.components.inventory.activeitem:Remove()
-
+            --页内的函数
             SpawnPrefabs_byStack(inst,"goldnugget",total_goldvalue+1*item_goldvalue)
-
         else
+            --页内的函数
             SpawnPrefabs_byStack(inst,"goldnugget",1*item_goldvalue)
         end
     end
