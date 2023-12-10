@@ -1,3 +1,32 @@
+## 杂项功能合集
+
+><i style="color:aqua;">是否写了一些常用的功能函数,例如背包中套娃的容器中的物品,需要获取最上一级的owner即玩家,诸如此类做个合集</i>
+
+先于`/scripts`下创建一个`.lua`
+例:`/scripts/util/mymodulefn.lua`
+```lua
+local commonfns = {}
+--私有变量（模块内使用）
+local privatevar = "private"
+--公有变量
+commonfns.publicvar = "public"
+
+function commonfns.test()
+    print(privatevar)
+end
+return commonfns
+```
+
+接着在你的预制物或其他文件中加载并使用这个模块:
+
+```lua
+--写在首行 加载
+local TestFn = require("util/mymodulefn")
+
+TestFn.test() --输出 private
+print(TestFn.publicvar) --输出 public
+```
+
 ## 简易冷却
 
 ```lua
