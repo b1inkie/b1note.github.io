@@ -100,7 +100,7 @@ for k,v in pairs(cantquickpicktab) do
 end
 ```
 
-## 成组生成并抛出物品
+## <h1 id="SpawnPrefabs_byStack">成组生成并抛出物品</h1>
 
 ```lua
 function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
@@ -202,7 +202,7 @@ function WrapItems(target,SpawnAndThrowOut,GiveToTargetPlayer,...)
     gift.components.unwrappable:WrapItems(gift_tab)
     --抛出或给予玩家
     if SpawnAndThrowOut then
-        [SpawnSinglePrefab_ThrowOut(target,gift)](#成组生成并抛出物品)
+        <a href="#SpawnPrefabs_byStack">SpawnSinglePrefab_ThrowOut(target,gift)</a>
         return
     elseif GiveToTargetPlayer then
         if target and target.components and target.components.inventory then
