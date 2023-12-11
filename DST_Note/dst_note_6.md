@@ -4,7 +4,7 @@
 local Ingredient = GLOBAL.Ingredient
 local TECH = GLOBAL.TECH
 
-local function ModAtlas(ingredients,amount)
+local function ModIngredient(ingredients,amount)
 	local atlas = "images/inventoryimages/"..ingredients..".xml"
 	return Ingredient(ingredients,amount,atlas)
 end
@@ -83,6 +83,20 @@ local recipe_all = {
 		},
 		isShown = isShownFn(TUNING.CONFIG_GUTKNIFE_RECIPE),
 		tech = TECH.SCIENCE_TWO,
+	},
+	----------------
+	--STRUCTURE-----
+	----------------
+	{
+		recipe_name = "mypot",
+		ingredients = {
+			ModIngredient("polished_stone", 3),
+			Ingredient("log", 6),
+		},
+		tech = TECH.SCIENCE_ONE,
+		config = {
+			placer = "mypot_placer",
+		}
 	},
 }
 
