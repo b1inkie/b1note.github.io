@@ -38,46 +38,6 @@ print(TestFn.publicvar) --输出 public
         inst:RemoveTag("iscooldown")
     end)
 ```
-也可以放进components里面
-```lua
-local bfnpack = Class(function(self, inst)
-    self.inst = inst
-    self.cooldown_on = false
-end,
-nil,
-{
-})
-function bfnpack:OnSave()
-    local data = {
-        --cooldown_on = self.cooldown_on,
-    }
-    return data
-end
-function bfnpack:OnLoad(data)
-    self.cooldown_on = false
-end
----------------------------
---简易冷却(注:冷却时间不保存)
-function bfnpack:cooldown(cooldown_time)
-    if not self.cooldown_on then
-        self.cooldown_on = true
-    end
-    inst:DoTaskInTime(cooldown_time, function()
-        self.cooldown_on = false
-    end)
-end
-function bfnpack:iscooldown()
-    return self.cooldown_on
-end
---[[e.g.
-    if not inst.components.bfnpack:iscooldown() then
-        print("法术!")
-        inst.components.bfnpack:cooldown(8)
-    end
-]]
----------------------------
-return bfnpack
-```
 
 ## 采集附近农作物
 
@@ -109,6 +69,7 @@ end
 ## 自动拾取附近物品
 
 ```lua
+    -- local player
     local pos = Vector3(player.Transform:GetWorldPosition())
     local ents = TheSim:FindEntities(pos.x,pos.y,pos.z, 3)
     for k, v in pairs(ents) do
@@ -275,37 +236,6 @@ function WrapItems(target,SpawnAndThrowOut,GiveToTargetPlayer,...)
         return
     end
     return gift
-end
-```
-
-## 成组交易
-
-每次交易掉手上拿的所有物品;不改组件;注意每次交易判断通过后,手上的东西会先被交易掉一个
-
-下面一例为交易换取金子
-
-```lua
---交易金子
-local function DoTradeForGold(inst,giver,item)
-    if item.components and item.components.tradable and item.components.tradable.goldvalue and item.components.tradable.goldvalue>0 then
-        local item_goldvalue = item.components.tradable.goldvalue
-
-        if giver.components and giver.components.inventory and 
-        giver.components.inventory.activeitem ~= nil then
-            local activenums = 0
-            local total_goldvalue = activenums*item_goldvalue
-            if giver.components.inventory.activeitem.components.stackable then
-                activenums = giver.components.inventory.activeitem.components.stackable:StackSize()
-                total_goldvalue = activenums*item_goldvalue
-            end
-            giver.components.inventory.activeitem:Remove()
-            --页内的函数
-            SpawnPrefabs_byStack(inst,"goldnugget",total_goldvalue+1*item_goldvalue)
-        else
-            --页内的函数
-            SpawnPrefabs_byStack(inst,"goldnugget",1*item_goldvalue)
-        end
-    end
 end
 ```
 
