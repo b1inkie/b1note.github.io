@@ -4,7 +4,7 @@
 
 ## 装备某件物品时增加属性点
 
-以下代码丢到简单触发器中,设置0延时
+><i style="color:aqua;">以下代码丢到简单触发器中,设置0延时</i>
 
 ```Go
 //配置部分(必填)
@@ -49,3 +49,69 @@
     
 (try_end),
 ```
+
+## 添加书籍
+
+><i style="color:aqua;">添加一本书籍,当玩家拥有时,增加多少点技能</i>
+
+以潘德395为例,打开scripts,找到`game_get_skill_modifier_for_troop`这一行,拉出来反编译:
+
+```python
+(store_script_param, ":var_0", 1),
+(store_script_param, ":var_1", 2),
+(assign, ":var_2", 0),
+(try_begin),
+    (eq, ":var_1", 11),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_wound_treatment_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 1),
+(else_try),
+    (eq, ":var_1", 17),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_training_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 2),
+(else_try),
+    (eq, ":var_1", 10),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_surgery_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 1),
+(try_end),
+(set_trigger_result, ":var_2"),
+```
+
+仿着写就可以了
+
+```python
+(store_script_param, ":var_0", 1),
+(store_script_param, ":var_1", 2),
+(assign, ":var_2", 0),
+(try_begin),
+    (eq, ":var_1", 11),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_wound_treatment_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 1),
+(else_try),
+    (eq, ":var_1", 17),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_training_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 2),
+(else_try),
+    (eq, ":var_1", 10),
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_surgery_reference"),
+    (gt, reg0, 0),
+    (val_add, ":var_2", 1),
+//-------------------------仿写部分
+(else_try),
+    (eq, ":var_1", 17), //这里17是教练技能的ID,自行尝试其他技能
+
+    (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_id"), //填物品ID
+    (gt, reg0, 0),
+    //如果你的MOD没有封装get_troop_item_amount这个函数,请自行判断玩家背包是否有一个及以上该物品
+
+    (val_add, ":var_2", 5), //具体提升多少点,这里5点教练
+//--------------------------
+(try_end),
+(set_trigger_result, ":var_2"),
+```
+
+><i style="color:aqua;">编译成txt,覆盖回去即可,注意行数的变化</i>
