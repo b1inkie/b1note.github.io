@@ -40,6 +40,7 @@
 已经有前辈帮我们汉化好了一份OPCODE（但是不全），大家可以 [点此下载](https://github.com/b1inkie/b1inkie.github.io/releases/download/untagged-1e6a4a47c9e8df84dcc6/OPCODE-CHS.txt)
 还有一份原版的OPCODE，也建议一并下载。[点此下载](https://github.com/b1inkie/b1inkie.github.io/releases/download/untagged-1f8c8e6671bcc52a1f87/OPCODE-EN.txt)
 汉化的那版里查不到的可以去原版查。
+Lav OP解释最新版 [点此下载](https://github.com/b1inkie/b1note.github.io/releases/download/OPCode/header_operations.Lav.OP)
 
 打开之后，就非常清晰的看到每个代码是干什么的了。
 我们举个例子：
@@ -48,7 +49,7 @@
 troop_add_gold  = 1528 # (troop_add_gold,<troop_id>,<value>),
 ```
 那么我们想给玩家加100第纳尔就可以这样写：
-```Go
+```python
 (troop_add_gold,"trp_player",100),
 ```
 但我们在哪里给玩家加第纳尔呢，总得有个触发条件吧，就比如说当玩家背包里有风干肉itm_dried_meat的时候，就给玩家加100第纳尔，那我们可以这样写：
@@ -58,21 +59,15 @@ troop_add_gold  = 1528 # (troop_add_gold,<troop_id>,<value>),
 ```
 源码写完了之后，我们需要把它编译成TXT，这时就需要用到MBCodeEditor，大家可以[点此下载](https://github.com/b1inkie/b1inkie.github.io/releases/download/1.0.0/MBCodeEditor.7z)
 打开MBCE，我们做个简单引导。
-
 ![](../images/mb-001.png)
-
 把MOD路径拷贝到地址栏，点一下LOAD MOD，提示读取成功就ok了，如果MBCE都读不出来，那你只能找作者要源码了。
-好，现在我们把写好的代码丢进Module_System_Code里面，再点一下Text_Code，便编译好了
-
+好，现在我们把写好的代码丢进Module_System_Code里面，再点一下Text_Code，便编译好了↓
 ![](../images/mb-002.png)
-
 最下面的Numbers of lines:2 表示代码一共有两行。
 好了，现在我们把它放进简单触发器simple_triggers里面↓
 打开simple_triggers，第二行的数字代表触发器的总数量，我们加一个这里就要加1。
 在最下面一行加上我们编译好的代码：
-
 <i style="color:red;">24.000000</i> <i style="color:yellow;">2</i> <i style="color:aqua;">150 1 288230376151711855 1528 2 360287970189639680 100</i>
-
 24代表每24小时检测一次，2代表代码总行数是2行，后面则是我们编译好的TXT了。
 那么游戏运行中每24小时就会检测一次玩家背包有没有风干肉，有的话就加100第纳尔给玩家。
 
