@@ -16,6 +16,7 @@
   * [初次见面](/MB_Note/mb_1.md)
   * [代码范例](/MB_Note/mb_2.md)
   * [简单功能合集](/MB_Note/mb_3.md)
+  * [合集](/MB_Note/mb_4.md)
 
 - LANG
   
