@@ -18,10 +18,10 @@
 以上两个文件需要魔法才能下载.
 这里给大家放到github上了(无需魔法,但如果下载很慢,请使用魔法或steam++这类工具加速github):
 ```EA DLC UNLOCKER V2```:
-[https://github.com/b1inkie/b1note.github.io/releases/download/TheSim4/sims-4-updater-v1.3.2.7z](https://github.com/b1inkie/b1note.github.io/releases/download/TheSim4/sims-4-updater-v1.3.2.7z)
+github:[https://github.com/b1inkie/b1note.github.io/releases/download/TheSim4/sims-4-updater-v1.3.2.7z](https://github.com/b1inkie/b1note.github.io/releases/download/TheSim4/sims-4-updater-v1.3.2.7z)
 
 ```sims-4-updater```:
-源下载地址:[https://krakenfiles.com/view/ZU0oqvyEKn/file.html](https://krakenfiles.com/view/ZU0oqvyEKn/file.html)
+github:[https://krakenfiles.com/view/ZU0oqvyEKn/file.html](https://krakenfiles.com/view/ZU0oqvyEKn/file.html)
 
 ***
 
