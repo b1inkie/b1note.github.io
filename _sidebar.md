@@ -21,3 +21,7 @@
 - LANG
   
   * [JP](/LANG/jp.md)
+
+- Game Share
+
+  * [The Sim 4](/GameShare/thesim4.md)
