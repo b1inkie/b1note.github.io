@@ -1,7 +1,9 @@
 ## The Sim 4 DLC 解锁和下载
 
 >1.<i style="color:aqua;">从```steam```下载本体</i>
+
 >2.<i style="color:aqua;">用```EA DLC UNLOCKER V2```解锁DLC</i>
+
 >3.<i style="color:aqua;">用```sims-4-updater```下载DLC</i>
 
 ***
