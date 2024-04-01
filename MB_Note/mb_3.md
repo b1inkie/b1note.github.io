@@ -254,3 +254,50 @@ You_lead_your_men_to_battle.
 
 依旧是战场触发器,和上一个案例一样,不过自爆不用检测间隔很短,设置个两三秒都可以
 比如```2.000000 0.000000 0.000000  0 行数```两秒检测一次
+
+## 光环:移速BUFF(光写了 没测)
+
+为一个兵种设置移速光环,在该兵种附近的友军会得到一个10秒的双倍移速BUFF.
+
+```python
+(assign,":aura_troop_id","trp_rhodok_blow"), #设置光环士兵ID
+
+(assign, ":distance_closest", 3000),
+(try_for_agents, ":need_speed_agent"),
+    (agent_is_alive, ":need_speed_agent"),
+    (agent_is_human, ":need_speed_agent"),
+    
+    (agent_get_party_id, ":need_speed_agent_party", ":need_speed_agent"), 
+    (agent_get_position,pos2,":need_speed_agent"),
+
+    (assign,":in_range",0),
+    (try_for_agents, ":ally"),
+        (eq, ":in_range", 0),
+
+        (agent_get_troop_id, ":tar_troop", ":ally"),
+        (eq, ":tar_troop", ":aura_troop_id"),
+        (agent_is_alive, ":ally"),
+        (agent_is_human, ":ally"),
+
+        (agent_get_position, pos3, ":ally"),
+        (agent_get_party_id,":ally_party",":ally"),
+        (eq, ":need_speed_agent_party", ":ally_party"),
+
+        (get_distance_between_positions, ":distance_abs", pos2, pos3),
+        (lt, ":distance_abs", ":distance_closest"),
+
+        (assign,":in_range",1),
+    (try_end),
+
+    (try_begin),
+        (eq, ":in_range",1),
+        (agent_set_speed_modifier, ":need_speed_agent", 200),
+    (else_try),
+        (eq, ":in_range",0),
+        (agent_set_speed_modifier, ":need_speed_agent", 100),
+    (try_end),
+(try_end),
+```
+
+依旧是战场触发器,和上一个案例一样,请参照修改
+注意设置触发器的检测间隔为10秒```10.000000 0.000000 0.000000  0 行数```
