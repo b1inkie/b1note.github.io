@@ -153,10 +153,12 @@
         (eq,":weapon_cur_type",itp_type_pistol),
         (eq, ":slot_item_type", itp_type_bullets),
         (assign,":missile_id",":slot_item"),
+        #若是手枪或火枪 可以在此处添加烟雾和枪声
       (else_try),
         (eq,":weapon_cur_type",itp_type_musket),
         (eq, ":slot_item_type", itp_type_bullets),
         (assign,":missile_id",":slot_item"),
+        #若是手枪或火枪 可以在此处添加烟雾和枪声
       (try_end),
     (try_end),
 
