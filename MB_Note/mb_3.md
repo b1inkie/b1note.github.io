@@ -210,3 +210,47 @@ You_lead_your_men_to_battle.
 0.200000表示1秒钟射5次;0.000000表示延迟检测;0.000000表示间隔;0表示触发条件为空;行数在用MBCE转好后有显示,填上即可,
 
 战场触发器中有多个```lead_your_men_to_battle```,请全部修改,不要漏掉.
+
+## 自爆步兵
+
+进场后提高移速,贴近敌人后自爆
+
+```python
+(assign,":blow_dmg",1000), #设置自爆伤害
+(assign,":blow_trpid","trp_rhodok_blow"), #设置自爆兵种ID
+
+(assign, ":distance_closest", 1000),
+(try_for_agents, ":blow_agent"),
+    (agent_is_alive, ":blow_agent"),
+    (agent_is_human, ":blow_agent"),
+    (agent_get_troop_id, ":tar_troop", ":blow_agent"),
+    (eq, ":tar_troop", ":blow_trpid"),
+    (agent_get_team, ":blow_team", ":blow_agent"), 
+    (agent_get_position,pos2,":blow_agent"),
+    (agent_set_speed_modifier, ":blow_agent", 300),
+
+    (assign, ":blowed", 0),
+
+    (try_for_agents, ":enemies"),
+        (agent_is_alive, ":enemies"),
+        (agent_is_human, ":enemies"),
+
+        (agent_get_position, pos3, ":enemies"),
+        (agent_get_team, ":enemies_team", ":enemies"),
+        (teams_are_enemies, ":blow_team", ":enemies_team"),
+
+        (get_distance_between_positions, ":distance_abs", pos2, pos3),
+        (lt, ":distance_abs", ":distance_closest"),
+        (agent_deliver_damage_to_agent, ":blow_agent", ":enemies", ":blow_dmg"),
+        (assign, ":blowed", 1),
+    (try_end),
+
+    (eq, ":blowed", 1)
+    (agent_play_sound, ":blow_agent", "snd_pistol_shot"),
+    (particle_system_burst,"psys_pistol_smoke",pos2,55),
+    (agent_deliver_damage_to_agent, ":blow_agent", ":blow_agent", 1000),
+(try_end),
+```
+
+依旧是战场触发器,和上一个案例一样,不过自爆不用检测间隔很短,设置个两三秒都可以
+比如```2.000000 0.000000 0.000000  0 行数```两秒检测一次
