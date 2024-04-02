@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "markdown-it-highlight-lines": "^1.0.2"
+  }
+}
