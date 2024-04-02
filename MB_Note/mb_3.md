@@ -6,15 +6,15 @@
 
 ><i style="color:aqua;">以下代码丢到简单触发器中,设置0延时</i>
 
-```Go
-//配置部分(必填)
-(assign,":max",63) //声明属性的上限
-(assign,":which_arm","itm_godz_zlzt_low") //哪件装备
-(assign,":which_attribute",ca_agility) //增加哪个属性 ca_agility是敏捷
-(assign,":buff",70) //增加多少点
-(assign,":which_slot_to_show_equipped", 2024),//用trp的2024号slot表示是否装备该物品 1是 0否
-(assign,":which_slot_to_store_value_of_real_buff", 2025),//用trp的2025号slot存储实际获得的属性加成
-//主体
+```python
+#配置部分(必填)
+(assign,":max",63) #声明属性的上限
+(assign,":which_arm","itm_godz_zlzt_low") #哪件装备
+(assign,":which_attribute",ca_agility) #增加哪个属性 ca_agility是敏捷
+(assign,":buff",70) #增加多少点
+(assign,":which_slot_to_show_equipped", 2024),#用trp的2024号slot表示是否装备该物品 1是 0否
+(assign,":which_slot_to_store_value_of_real_buff", 2025),#用trp的2025号slot存储实际获得的属性加成
+#主体
 (troop_get_slot, ":equipped", "trp_player", ":which_slot_to_show_equipped"), 
 (try_begin),
     (neg|eq, ":equipped", 1),
@@ -100,16 +100,16 @@
     (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_surgery_reference"),
     (gt, reg0, 0),
     (val_add, ":var_2", 1),
-//-------------------------仿写部分
+#-------------------------仿写部分
 (else_try),
-    (eq, ":var_1", 17), //这里17是教练技能的ID,自行尝试其他技能
+    (eq, ":var_1", 17), #这里17是教练技能的ID,自行尝试其他技能
 
     (call_script, "script_get_troop_item_amount", ":var_0", "itm_book_id"), //填物品ID
     (gt, reg0, 0),
-    //如果你的MOD没有封装get_troop_item_amount这个函数,请自行判断玩家背包是否有一个及以上该物品
+    #如果你的MOD没有封装get_troop_item_amount这个函数,请自行判断玩家背包是否有一个及以上该物品
 
-    (val_add, ":var_2", 5), //具体提升多少点,这里5点教练
-//--------------------------
+    (val_add, ":var_2", 5), #具体提升多少点,这里5点教练
+#--------------------------
 (try_end),
 (set_trigger_result, ":var_2"),
 ```
@@ -190,7 +190,7 @@
 
 可以看到如下代码:
 
-```python
+```go
 You_lead_your_men_to_battle. 
 
 4 1 4160 0 16 12 0  

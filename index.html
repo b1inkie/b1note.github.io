@@ -79,6 +79,16 @@
     <div id="app"></div>
 
     <script>
+        const MarkdownIt = require('markdown-it')
+        const highlightLines = require('markdown-it-highlight-lines')
+
+        const md = new MarkdownIt()
+        md.use(highlightLines)
+
+        md.render(markdownString)
+    </script>
+
+    <script>
         window.$docsify = {
             name: 'Open Note',
             repo: 'https://b1inkie.github.io/b1note.github.io/#/',
@@ -97,8 +107,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/docsify/4.12.2/plugins/search.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-bash.min.js"></script>
     
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-lua.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-lua.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-go.min.js"></script>
 </body>
 
