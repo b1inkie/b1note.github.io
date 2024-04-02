@@ -26,6 +26,12 @@
         gtag('js', new Date());
         gtag('config', 'G-WLN9X1R82N');
     </script>
+
+<script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('sw.js')
+    }
+  </script>
     
 </head>
 
@@ -94,8 +100,8 @@
             name: 'Open Note',
             repo: 'https://b1inkie.github.io/b1note.github.io/#/',
             loadSidebar: true,
-            maxLevel: 4,
-            subMaxLevel: 2,
+            maxLevel: 6,
+            subMaxLevel: 3,
             auto2top: true,
             search: {
                 placeholder: "search..."
@@ -128,7 +134,7 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-go.min.js"></script>
     
-
+    
 
 </body>
 

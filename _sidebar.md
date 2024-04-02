@@ -1,4 +1,4 @@
-- DST Note
+* DST Note
 
   * [添加一个容器](/DST_Note/dst_note_1.md)
   * [添加升级系统](/DST_Note/dst_note_2.md)
@@ -11,17 +11,18 @@
   * [dps显示](/DST_Note/dst_note_9.md)
   * [杂项](/DST_Note/dst_note_misc.md)
 
-- MB Note
+* MB Note
 
   * [初次见面](/MB_Note/mb_1.md)
   * [代码范例](/MB_Note/mb_2.md)
   * [案例](/MB_Note/mb_3.md)
   * [笔记](/MB_Note/mb_4.md)
 
-- LANG
+* LANG
   
   * [JP](/LANG/jp.md)
 
-- Game Share
+* Game Share
 
   * [The Sim 4](/GameShare/thesim4.md)
+  * [steam++](/GameShare/steam++.md)
