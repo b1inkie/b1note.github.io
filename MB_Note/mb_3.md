@@ -6,7 +6,7 @@
 
 ><i style="color:aqua;">以下代码丢到简单触发器中,设置0延时</i>
 
-```python
+```python {1,2,4-5}
 #配置部分(必填)
 (assign,":max",63) #声明属性的上限
 (assign,":which_arm","itm_godz_zlzt_low") #哪件装备
