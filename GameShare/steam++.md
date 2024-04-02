@@ -7,24 +7,22 @@
 
 <html>
 <body>
-    <script>
-        window.$docsify = {
-            giscus:{
-            repo: "b1inkie/docsify.comment",
-            repoId: "R_kgDOLoms5w",
-            category: "Announcements",
-            categoryId: "DIC_kwDOLoms584CeZPP",
-            mapping: "pathname",
-            reactionsEnabled: "0",
-            strict: "1",
-            emitMetadata: "0",
-            inputPosition: "bottom",
-            theme: "dark",
-            lang: "zh-CN",
-            loading: "lazy"
-            },
-        }
-    </script>
+    <script src="https://giscus.app/client.js"
+        data-repo="b1inkie/docsify.comment"
+        data-repo-id="R_kgDOLoms5w"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOLoms584CeZPP"
+        data-mapping="pathname"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
     <!-- giscus评论  -->
 
     <link rel="stylesheet" href="https://unpkg.com/docsify-giscus@1.0.0/dist/giscus.css">
