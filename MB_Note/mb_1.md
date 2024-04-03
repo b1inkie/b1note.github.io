@@ -1,5 +1,7 @@
 ## 简单引导
 
+[旧主页点这里](https://b1inkie.github.io/)
+
 先看下面两个问题:
 
 ><i style="color:aqua;">Q:没学过PYTHON也可以自己写代码吗？</i>
