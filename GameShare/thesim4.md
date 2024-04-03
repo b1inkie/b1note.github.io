@@ -34,13 +34,21 @@ github:[https://krakenfiles.com/view/ZU0oqvyEKn/file.html](https://krakenfiles.c
 ### 第二步
 
 下载```EA DLC UNLOCKER V2```,解压到任意目录,运行```setup.bat```
+
 ![setup](../images/thesim4/1.png)
+
 输入 1 回车
+
 ![setup1](../images/thesim4/2.png)
+
 输入 2 回车
+
 ![setup2](../images/thesim4/3.png)
+
 找到```the sim 4```的对应编号,输入20回车
+
 ![setup20](../images/thesim4/4.png)
+
 至此DLC解锁完毕,叉掉窗口.
 
 >**<i style="color:crimson;">出现报红问题:</i>**
