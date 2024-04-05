@@ -6,6 +6,8 @@
 
 ><i style="color:aqua;">以下代码丢到简单触发器中,设置0延时</i>
 
+<details> <summary>代码点我展开</summary>
+
 ```python {1,2,4-5}
 #配置部分(必填)
 (assign,":max",63) #声明属性的上限
@@ -49,6 +51,8 @@
     
 (try_end),
 ```
+
+</details>
 
 ## 添加书籍
 
