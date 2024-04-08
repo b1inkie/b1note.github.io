@@ -60,6 +60,8 @@
 
 以潘德395为例,打开scripts,找到`game_get_skill_modifier_for_troop`这一行,拉出来反编译:
 
+<details> <summary>代码点我展开</summary>
+
 ```python
 (store_script_param, ":var_0", 1),
 (store_script_param, ":var_1", 2),
@@ -83,7 +85,11 @@
 (set_trigger_result, ":var_2"),
 ```
 
+</details>
+
 仿着写就可以了
+
+<details> <summary>代码点我展开</summary>
 
 ```python
 (store_script_param, ":var_0", 1),
@@ -117,6 +123,8 @@
 (try_end),
 (set_trigger_result, ":var_2"),
 ```
+
+</details>
 
 ><i style="color:aqua;">编译成txt,覆盖回去即可,注意行数的变化</i>
 
@@ -1402,4 +1410,52 @@ fn_autoaim -1
 </details>
 
 如何在战场触发器中添加这段代码,前面几篇有详细说明,此处不再赘述.
+
+
+## 自定义战利品
+
+写的功能很简单,让一个部队模板概率掉落某样东西.
+
+这次先封装一个函数,就叫```b1_chanceloot_pt_singleitem```吧:
+
+<details> <summary>b1_chanceloot_pt_singleitem</summary>
+
+```python
+(store_script_param, ":custom_enemy_party_template_id", 1), #自定义敌方部队模板 pt_ 开头的
+(store_script_param, ":loot_item_id", 2), #自定义战利品物品 itm_ 开头的
+(store_script_param, ":loot_chance", 3), #自定义战利品掉落几率 0-100 之间的整数
+(try_begin),
+    (party_get_template_id, ":enemy_party_template_id", "$g_enemy_party"),
+    (eq, ":enemy_party_template_id", ":custom_enemy_party_template_id"),
+    (store_random_in_range,":roll", 0, 100),
+    (lt, ":roll", ":loot_chance"),
+    (troop_ensure_inventory_space, "trp_temp_troop", 1),
+    (troop_add_item, "trp_temp_troop", ":loot_item_id", 0),
+    (troop_sort_inventory, "trp_temp_troop"),
+(try_end),
+```
+
+</details>
+
+用MBCE编译成txt,并放入```scripts```中,注意总函数数量 **+1**:
+<details> <summary>代码点我展开</summary>
+
+```python
+b1_chanceloot_pt_singleitem -1
+ 12 23 2 1224979098644774912 1 23 2 1224979098644774913 2 23 2 1224979098644774914 3 4 0 1609 2 1224979098644774915 144115188075856187 31 2 1224979098644774915 1224979098644774912 2136 3 1224979098644774916 0 100 2147483678 2 1224979098644774916 1224979098644774914 1510 2 360287970189639683 1 1530 3 360287970189639683 1224979098644774913 0 1511 1 360287970189639683 3 0 
+```
+
+</details>
+
+最后我们再```scripts```,找到战利品计算函数```party_calculate_loot```,添加一行调用即可.
+
+例如我想让绿林强盗pt_forest_bandits这个部队模板有95%的几率掉落龙泪，可以这样写：
+
+```python
+(call_script,"script_b1_chanceloot_pt_singleitem", "pt_forest_bandits", "itm_qualis", 95),
+```
+
+把这一句编译好添加到```party_calculate_loot```最后一行,注意总行数变化;或者将```party_calculate_loot```里的代码全部拉出来转成py,最下面一行加上这一句,编译成txt,再覆盖回去,注意总行数变化(这是很基础的东西,以后不会再提)
+
+
 
