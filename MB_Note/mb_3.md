@@ -882,7 +882,7 @@ You_lead_your_men_to_battle.
 #将武器使用者的1398号slot当做开关,1开0关,用于控制远程武器自动射击
 (store_trigger_param_1, ":user"),
 (try_begin), 
-    (neq|agent_slot_eq, ":user", 1398, 1),
+    (neg|agent_slot_eq, ":user", 1398, 1),
     (agent_set_slot, ":user", 1398, 1),
 (else_try),
     (agent_slot_eq, ":user", 1398, 1),
