@@ -17,7 +17,7 @@
   * [代码范例](/MB_Note/mb_2.md)
   * [案例](/MB_Note/mb_3.md)
   * [笔记](/MB_Note/mb_4.md)
-
+  * [战场触发](/MB_Note/mb_5.md)
 * LANG
   
   * [JP](/LANG/jp.md)
