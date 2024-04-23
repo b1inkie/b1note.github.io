@@ -331,7 +331,7 @@ You_lead_your_men_to_battle.
 
 散弹 但是每个弹头都是自瞄 并且会锁定不同的敌人
 
-添加: 魔球 武器攻击触发器
+添加: 武器攻击触发器
 
 <details> <summary>代码点我展开</summary>
 
