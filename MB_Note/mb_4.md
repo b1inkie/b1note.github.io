@@ -104,3 +104,132 @@ try_for_agents    = 12		# (try_for_agents,<destination>),
 这些就是ms提供的遍历方式了. 例 可以将所有party看成一个表,挂在party上的slot和对应的值,当成键值对.
 举例:
 我们可以通过某种方式来给某些兵种升级,一共能升5级,每级都会对该兵种的三围或技能进行强化,那么我们可以用一个slot挂在troop身上,来表示该troop的当前强化等级;后续可以通过`try_for_range`遍历troop,筛选并进行操作
+
+## 潘德自动设置坐镇值和分组修复
+
+本篇仅限于 潘德的预言
+
+本文请配合视频食用(能看懂就不用看视频了) 群号:855512521
+
+潘德的坐镇和分组:是由兵种的4个slot决定的,169,170,171这三个是坐镇,172是分组,0步兵,1弓兵,2骑兵,3游骑,等等
+
+这4个slot,是在函数kt_init_troop_slots中手动设置的,然后被game_start调用以生效.
+
+再说分组,在上述函数中设置分组,实际你会发现根本对不上号,这是因为,设置分组由作者写的另一个函数init_correct_troop_type控制
+这个函数我也不想知道他分组规则是怎么写的.我经常说过,像这种自己写一个覆盖掉要比修改别人写的代码要省很多时间.
+
+下面制定一下坐镇和分组的规则:
+- 坐镇:
+	* 169号slot = 等级 + 力量/2 + 铁骨 + 强击 + 强弓 + 强掷 
+	* 170号slot = 169号slot * 1.5
+	* 171号slot = 0
+
+- 分组: 有弓有马归为第3组游骑兵,有弓无马归为第1组弓兵,无弓有马归为第2组骑兵,无马无弓归为第0组步兵.
+
+开始添加:
+
+```python
+# 在函数 kt_init_troop_slots 后面加上以下代码-------------------------------------
+
+#--------------配置部分如下-----------------------------
+(assign,":trp_lower_bound","trp_tournament_participants"), #规定下限兵种id.一般从trp_player后面一个开始
+(assign,":trp_upper_bound","trp_allend"), #规定上限兵种id.一般到最后一个兵种的后面一个兵种
+#--------------配置部分如上-----------------------------
+
+(try_for_range,":troop_id", ":trp_lower_bound", ":trp_upper_bound"), # 遍历所有兵种,计算坐镇slot的值.
+    (assign,":qb",0),
+
+    (store_character_level, ":lv", ":troop_id"), # 等级
+    (store_attribute_level, ":strength", ":troop_id", ca_strength), # 力量
+    (val_div, ":strength", 2), # 力量/2
+    (store_skill_level, ":skl_1", skl_ironflesh, ":troop_id"),
+    (store_skill_level, ":skl_2", skl_power_strike, ":troop_id"),
+    (store_skill_level, ":skl_3", skl_power_throw, ":troop_id"),
+    (store_skill_level, ":skl_4", skl_power_draw, ":troop_id"),
+
+    (val_add, ":qb", ":lv"), # 等级
+    (val_add, ":qb", ":strength"), # 力量/2
+    (val_add, ":qb", ":skl_1"), # 铁骨
+    (val_add, ":qb", ":skl_2"), # 强击
+    (val_add, ":qb", ":skl_3"), # 强掷
+    (val_add, ":qb", ":skl_4"), # 强弓
+
+    (troop_set_slot, ":troop_id", 169, ":qb"), 
+    (val_mul, ":qb", 3), 
+    (val_div, ":qb", 2),
+    (troop_set_slot, ":troop_id", 170, ":qb"), # 170号slot = 169号slot * 1.5
+    (troop_set_slot, ":troop_id", 171, 0), 
+    #-------------------------------------------------------------
+    (assign,":group",0), # 分组,0步兵,1弓兵,2骑兵,3游骑,等等.
+
+    (assign,":has_ranged",0), # 是否有远程武器,0没有,1有.
+    (assign,":has_horse",0), # 是否有马,0没有,1有.
+
+    (try_for_range,":i",0,3), # 遍历武器
+        (troop_get_inventory_slot, ":itm_id", ":troop_id", ":i"), # 获取武器id.
+        (neq,":itm_id",-1), # 如果武器id不为-1,则有武器.
+        (item_get_type, ":weapon_type", ":itm_id"), # 获取武器类型.
+        (this_or_next|eq,":weapon_type",itp_type_bow), # 如果是弓,则有远程武器.
+        (this_or_next|eq,":weapon_type",itp_type_crossbow), # 如果是弩,则有远程武器.
+        (eq,":weapon_type",itp_type_thrown), # 如果是投掷,则有远程武器.
+        (assign,":has_ranged",1), # 如果有远程武器,则有远程武器.
+    (try_end), # 遍历武器结束.
+
+    (try_begin),
+        (troop_get_inventory_slot, ":horse_id", ":troop_id", 8), # 获取坐骑id.
+        (neq,":horse_id",-1), # 如果坐骑id不为-1,则有马.
+        (assign,":has_horse",1), # 如果有马,则有马.
+    (try_end), 
+
+    (try_begin), 
+        (eq,":has_ranged",1),
+        (eq,":has_horse",1),
+        (assign,":group",3), # 有远程武器有马,则归为第3组游骑兵.
+    (else_try), 
+        (eq,":has_ranged",1),
+        (eq,":has_horse",0),
+        (assign,":group",1), # 有远程武器无马,则归为第1组弓兵.
+    (else_try),
+        (eq,":has_ranged",0),
+        (eq,":has_horse",1),
+        (assign,":group",2), # 无远程武器有马,则归为第2组骑兵.
+    (else_try),
+        (assign,":group",0), # 无远程武器无马,则归为第0组步兵.
+    (try_end), 
+    (troop_set_slot, ":troop_id", 172, ":group"), # 设置分组. # 172号slot = 分组.
+(try_end), # 遍历所有兵种结束.
+
+#------------------以上4个slot设置完毕----------------------------------
+```
+
+那么我们还需修复一下分组:
+
+```python
+#在函数game_start最后添加代码
+
+#--------------配置部分如下-----------------------------
+(assign,":trp_lower_bound","trp_tournament_participants"), #规定下限兵种id.一般从trp_player后面一个开始
+(assign,":trp_upper_bound","trp_allend"), #规定上限兵种id.一般到最后一个兵种的后面一个兵种
+#--------------配置部分如上-----------------------------
+
+(try_for_range,":troop_id", ":trp_lower_bound", ":trp_upper_bound"), 
+    (troop_get_slot, ":group", ":troop_id", 172), # 获取分组. # 172号slot = 分组.
+    (troop_set_class,":troop_id",":group"), # 设置分组. # 172号slot = 分组. # 这里设置分组.
+(try_end), # 遍历所有兵种结束.
+```
+
+><i style="color:aqua;">我的建议(实际也是这样做的)</i>:单独弄俩函数封装一下,这样以后修改坐镇或分组规则,只需要修改这两个函数即可.
+
+><i style="color:red;">特别注意</i>:以后如果你添加了一堆新的兵种,以上自动设置并不会生效,因为没有遍历troop的OP啊.你还是要自己再去填一下配置部分的兵种下界,再编译好覆盖掉.
+
+***
+
+附一个网址(若打不开应该chrome或用steam++等加速github):
+
+https://b1inkie.github.io/b1note.github.io/#/MB_Note/mb_3
+
+装备某件物品时增加属性点;添加书籍;全自动武器;自爆步兵;光环:移速BUFF(光写了 没测);散弹 但是每一个弹头都是自瞄;自定义战利品等等功能都可以在这里找到.
+
+若依旧有疑问或需要视频讲解,可以加下面群:
+附加1个交流群: 855512521
+
