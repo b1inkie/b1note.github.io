@@ -18,6 +18,21 @@
   * [案例](/MB_Note/mb_3.md)
   * [笔记](/MB_Note/mb_4.md)
   * [战场触发](/MB_Note/mb_5.md)
+
+* Algorithm
+
+  * [01_概念](/algorithm/L01_概念.md)
+  * [02_时间复杂度](/algorithm/L02_时间复杂度.md)
+  * [03_空间复杂度](/algorithm/L03_空间复杂度.md)
+  * [04_递归](/algorithm/L04_递归.md)
+  * [05_递归补充_汉诺塔](/algorithm/L05_递归_汉诺塔.md)
+  * [06_查找_顺序查找](/algorithm/L06_查找_顺序查找.md)
+  * [07_查找_二分查找](/algorithm/L07_查找_二分查找.md)
+  * [08_排序_冒泡排序](/algorithm/L08_排序_冒泡排序.md)
+  * [09_排序_冒泡topk](/algorithm/L09_排序_冒泡topk.md)
+  * [10_排序_选择排序](/algorithm/L10_排序_选择排序.md)
+  * [11_排序_插入排序](/algorithm/L11_排序_插入排序.md)
+
 * LANG
   
   * [JP](/LANG/jp.md)
