@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/docsify/4.12.2/themes/vue.min.css">
     <link rel="stylesheet" href="./css/mouse.css">
+    <link rel="stylesheet" href="//unpkg.com/mermaid/dist/mermaid.min.css" />
+
 
     <link rel="shortcut icon" href="./images/misc/onotera32x32-circle.ico">
 
@@ -120,6 +122,28 @@
             lang: "zh-CN",
             loading: "lazy"
             },
+            plugins: [
+                function (hook, vm) {
+                hook.ready(function () {
+                    mermaid.initialize({ startOnLoad: false });
+                });
+                hook.doneEach(function () {
+                    mermaid.init(undefined, '.mermaid');
+                });
+                }
+            ],
+            markdown: {
+                renderer: {
+                code: function (code, lang) {
+                    var html = '';
+                    if (code.match(/^sequenceDiagram/) || code.match(/^graph/) || code.match(/^gantt/)) {
+                    html = '<div class="mermaid">' + code + '</div>';
+                    }
+                    var hl = Prism.highlight(code, Prism.languages[lang] || Prism.languages.markup);
+                    return html + '<pre v-pre data-lang="' + lang + '"><code class="lang-' + lang + '">' + hl + '</code></pre>';
+                    }
+                }
+            }
         }
     </script>
     <!-- giscus评论  -->
@@ -134,7 +158,8 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-lua.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-go.min.js"></script>
-    
+    <script type="text/javascript" src="//unpkg.com/mermaid/dist/mermaid.min.js"></script>
+
     
 
 </body>
