@@ -1,6 +1,6 @@
 ## 物品栏逐帧动画
 
-[APNG动图切片(饥荒)(动态物品栏背景图) 工具下载](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/APNG_To_InvBgAnim_v2_by_lan.7z)
+[APNG动图切片(饥荒)(动态物品栏背景图) 工具下载](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/APNG_To_InvBgAnim_v3_by_lan.7z)
 
 - 用途:
 将你需要的某个动图变成饥荒当中物品栏图片的背景
