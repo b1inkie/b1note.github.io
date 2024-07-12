@@ -1,5 +1,21 @@
 ## 物品栏逐帧动画
 
+[APNG动图切片(饥荒)(动态物品栏背景图) 工具下载](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/APNG_To_InvBgAnim_by_lan.7z)
+
+- 用途:
+将你需要的某个动图变成饥荒当中物品栏图片的背景
+
+- 使用指南：
+1. 选择需要进行处理的图像文件
+2. 点击后等待转换完成
+3. 得到一个png文件,请使用TexCreator手动转换成饥荒使用的tex文件
+4. 得到一个切好的xml文件(其中tex名称将以纯数字命名,方便循环)
+5. 得到一个help_fn.lua文件,里面是一个可以直接调用的函数,详见文件内部
+6. 将tex和xml放入你mod的images文件夹中,在合适的地方调用help_fn.lua里的函数即可
+
+***
+#### 以下都是旧内容:
+
 ![essex_frame_dyn01](../images/essex_frame_dyn01.gif)
 
 顾名思义,多图循环,实现动画

@@ -29,6 +29,8 @@ print(TestFn.publicvar) --输出 public
 
 ## 简易冷却
 
+<details> <summary>代码点我展开</summary>
+
 ```lua
     if not inst:HasTag("iscooldown") then
         print("施法!")
@@ -39,34 +41,11 @@ print(TestFn.publicvar) --输出 public
     end)
 ```
 
-## 采集附近农作物
-
-以自己为中心放射状采集附近农作物,并且采集时赠送一个对应的种子
-```lua
---local caster
-for rangs = 1, 10 do
-    inst:DoTaskInTime(rangs, function() 
-        local ents = TheSim:FindEntities(pos.x,pos.y,pos.z,rangs*2)
-        for k,v in pairs(ents) do
-            --农作物有farm_plant的标签
-            if v.components.pickable and v:HasTag("farm_plant") then  
-                SpawnPrefab("sand_puff").Transform:SetPosition(v.Transform:GetWorldPosition()) --加采集特效,可以不加,防卡顿
-                local seed_pt = Vector3(v.Transform:GetWorldPosition()) + Vector3(math.random(0,3),math.random(0,3),math.random(0,3)) - Vector3(math.random(0,3),math.random(0,3),math.random(0,3))
-
-                local prefix = "farm_plant_"
-                local seed_name = string.sub(v.prefab,1+string.len(prefix)).."_seeds"
-                SpawnPrefab(seed_name).Transform:SetPosition(seed_pt:Get())
-                v.components.pickable:Pick()
-                if caster.SoundEmitter then
-                    caster.SoundEmitter:PlaySound("dontstarve/wilson/pickup_plants")
-                end
-            end
-        end
-    end)
-end
-```
+</details>
 
 ## 自动拾取附近物品
+
+<details> <summary>代码点我展开</summary>
 
 ```lua
     -- local player
@@ -87,6 +66,7 @@ end
         end
     end
 ```
+
 `modmain.lua`
 ```lua
 --添加一些不可拾取的物品,例如马鞍,骑马时拾取马鞍会报错
@@ -105,9 +85,13 @@ for k,v in pairs(cantquickpicktab) do
 end
 ```
 
+</details>
+
 ## 成组生成并抛出物品
 
 ><i style="color:aqua;">成组生成并抛出预制物</i>
+
+<details> <summary>代码点我展开</summary>
 
 ```lua
 function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
@@ -145,7 +129,11 @@ function SpawnPrefabs_byStack(inst,prefabname,prefabnum)
 end
 ```
 
+</details>
+
 ><i style="color:aqua;">简单生成并抛出预制物</i>
+
+<details> <summary>代码点我展开</summary>
 
 ```lua
 function SpawnSinglePrefab_ThrowOut(tar,item)
@@ -158,90 +146,16 @@ function SpawnSinglePrefab_ThrowOut(tar,item)
 end
 ```
 
+</details>
+
 ## 自定义打包袋物品
 
-><i style="color:aqua;">简易定义打包袋</i>
-
-```lua
---自定义打包袋物品,只有4个格子所以最多4个物品
-local pack_items = {}
-pack_items = {
-    SpawnPrefab("tomato"),
-    SpawnPrefab("tomato"),
-    SpawnPrefab("tomato"),
-    SpawnPrefab("tomato"),
-}
-local package = SpawnPrefab("gift")
-package.components.unwrappable:WrapItems(pack_items)
-```
-
-><i style="color:aqua;">生成包裹并抛出或给予玩家</i>
-
-```lua
-function WrapItems(target,SpawnAndThrowOut,GiveToTargetPlayer,...)
-    --(target,生成并抛出,给予target玩家,...)
-    local packs = {...} --{预制物A,数量,预制物B,数量...}
-    local _packs = {}
-    for k=1,#packs,2 do
-        if type(packs[k]) == "string" then
-            if SpawnPrefab(packs[k]) and SpawnPrefab(packs[k]).components then
-                --预制物名需存在
-                _packs[k] = packs[k]
-                if type(packs[k+1]) == "number" then
-                    _packs[k+1] = packs[k+1]
-                else
-                    _packs[k+1] = 1
-                end
-            end
-        end
-    end
-    local new_packs = {}
-    for k,v in pairs(_packs) do
-        if v~=nil then
-            table.insert(new_packs,v)
-        end
-    end
-    if #new_packs == 0 then
-        return
-    end
-    --生成包裹
-    local gift_tab = {}
-    local len = #new_packs
-    if len > 8 then
-        len = 8
-    end
-    local _i = 0
-    for k=1,len,2 do
-        _i = _i + 1
-        gift_tab[_i] = SpawnPrefab(new_packs[k])
-        if gift_tab[_i].components.stackable then
-            local _maxsize = gift_tab[_i].components.stackable.maxsize
-            if _maxsize < new_packs[k+1] then
-                new_packs[k+1] = _maxsize
-            end
-            gift_tab[_i].components.stackable.stacksize = new_packs[k+1]
-        end
-    end
-    local gift = SpawnPrefab("gift")
-    gift.components.unwrappable:WrapItems(gift_tab)
-    --抛出或给予玩家
-    if SpawnAndThrowOut then
-        --页内的函数
-        SpawnSinglePrefab_ThrowOut(target,gift) 
-        return
-    elseif GiveToTargetPlayer then
-        if target and target.components and target.components.inventory then
-            target.components.inventory:GiveItem(gift)
-        end
-        return
-    end
-    return gift
-end
-```
 
 ## 获取owner
 
 当物品在玩家的物品栏,背包,物品栏或背包中的其他容器或该容器套娃的容器中,获取玩家owner
+
+<details> <summary>代码点我展开</summary>
 
 ```lua
 local function GetOwnerPlayer(invitem)
@@ -263,3 +177,66 @@ local function GetOwnerPlayer(invitem)
     return _player
 end
 ```
+
+</details>
+
+## 服务器宣告
+
+约等于能直接显示在聊天框的print
+
+<details> <summary>代码点我展开</summary>
+
+```lua
+local function declare(icon,...)
+    -- @param icon:"vote";"leave_game";"join_game";"death";"resurrect";"mod";"kicked_from_game";"banned_from_game";"dice_roll"
+    -- @param ...:string
+    local s = ''
+    for i = 1, select('#', ...) do s = s .. tostring(select(i, ...)) .. ' ' end
+    TheNet:Announce(s,nil,nil,icon)
+end
+```
+
+<details>
+
+## 打乱数组(Fish-Yates shuffle)
+
+<details> <summary>代码点我展开</summary>
+
+```lua
+function shuffleTab(tbl,k)
+    -- @param tbl: 需要打乱的表
+    -- @param k: k次，因为是倒着遍历的,所以洗好的表也要倒着拿数据,不填则完全打乱
+    k = math.min(k or #tbl,#tbl)
+    if k > 1 then
+        for i = #tbl, #tbl-k+1, -1 do
+            local j = math.random(i)
+            tbl[i], tbl[j] = tbl[j], tbl[i]
+        end
+    end
+end
+```
+
+<details>
+
+## 深拷贝
+
+<details> <summary>代码点我展开</summary>
+
+```lua 
+function deepCopy(orig)
+    local orig_type = type(orig)
+    local copy
+    if orig_type == 'table' then
+        copy = {}
+        for orig_key, orig_value in ipairs(orig) do
+            copy[self:deepCopy(orig_key)] = self:deepCopy(orig_value)
+        end
+        setmetatable(copy, self:deepCopy(getmetatable(orig)))
+    else -- number, string, boolean, etc.
+        copy = orig
+    end
+    return copy
+end
+```
+
+</details>

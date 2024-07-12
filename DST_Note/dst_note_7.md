@@ -1,4 +1,4 @@
-## 按键技能
+## 添加按键技能
 
 ```lua
 TheInput = GLOBAL.TheInput

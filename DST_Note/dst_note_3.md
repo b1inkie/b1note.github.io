@@ -17,6 +17,7 @@
 8. 断筋(移动掉血)
 
 `scripts/components/elucidator_sys.lua`
+<!-- 
 ```lua
 local elucidator_sys = Class(function(self, inst)
     self.inst = inst
@@ -354,7 +355,7 @@ function elucidator_sys:atk(inst,attacker,target,bottom)
         end
     end
 end
-```
+``` -->
 
 ## 击晕(附赠)
 
