@@ -2,7 +2,9 @@
 
 ## 1. 一键制作逐帧动画
 
-[动图一键转scml](https://github.com/b1inkie/b1note.github.io/releases/download/dst_tool_gif_to_scml/gif_to_scml.7z)
+[点我下载:动图一键转scml LightVer](https://github.com/b1inkie/b1note.github.io/releases/download/dst_tool_gif_to_scml/gif_to_scml_Light.7z)
+
+[上面如果用不了 再下我](https://github.com/b1inkie/b1note.github.io/releases/download/dst_tool_gif_to_scml/gif_to_scml.7z)
 
 - 用途:
 将一张动图,转换成scml格式的逐帧动画
@@ -17,7 +19,9 @@
 
 ## 2. 一键制作动态物品栏边框
 
-[APNG动图切片(饥荒)(动态物品栏背景图) 工具下载](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/TOOL_APNG_To_InvBgAnim.7z)
+[点我下载: APNG动图切片(饥荒)(动态物品栏背景图) LightVer](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/TOOL_APNG_To_InvBgAnim_Light.7z)
+
+[上面如果用不了 再下我](https://github.com/b1inkie/b1note.github.io/releases/download/DST_TOOLS/TOOL_APNG_To_InvBgAnim.7z)
 
 - 用途:
 将你需要的某个动图变成饥荒当中物品栏图片的背景
