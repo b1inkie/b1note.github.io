@@ -10,6 +10,7 @@
   * [添加动作](/DST_Note/dst_note_8.md)
   * [dps显示](/DST_Note/dst_note_9.md)
   * [杂项](/DST_Note/dst_note_misc.md)
+  * [工具篇](/DST_Note/dst_note_tools.md)
 
 * MB Note
 
