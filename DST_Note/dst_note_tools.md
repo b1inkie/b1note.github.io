@@ -35,3 +35,24 @@
 6. 得到一个help_fn.lua文件,里面是一个可以直接调用的函数,函数下面的示例将会给出调用当前xml的推荐参数
 7. 将tex和xml放入你mod的images文件夹中,在合适的地方插入help_fn.lua里的示例函数即可
 8. 注意新手请勿随意更改文件名,在modmain中正常注册xml即可
+
+## 3. 一键制作武器
+
+[点我下载: 一键制作武器 LightVer](https://github.com/b1inkie/b1note.github.io/releases/download/DST_gen_weapon/Auto_Gen_Weapon_by_lan.7z)
+
+- 用途:
+一键制作武器
+
+- 使用指南：
+1. 点击 提取三张素材图片到当前目录, 
+    img_ground: 地面图
+    img_swap: 手持图
+    img_inv: 物品栏图
+
+2. 不更改图片名称和图层大小,替换好以后,填写右边的信息,勾选你需要的功能
+
+3. 点击 注入图片和信息(请耐心等待), 等待完成
+
+4. 还差最后一步,你需要自动打包动画工具,如果是正版,请下载Dont Starve Mod Tools,autocompiler就位于该目录下;学习版请自行搜索下载
+
+5. 你的武器已完成,在武器制作栏你可以找到他,若想修改详细信息,请自行修改scripts/util/prefab_data文件

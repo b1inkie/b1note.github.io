@@ -6,7 +6,7 @@
   * [物品栏逐帧动画](/DST_Note/dst_note_4.md)
   * [字符画](/DST_Note/dst_note_5.md)
   * [添加配方](/DST_Note/dst_note_6.md)
-  * [按键技能](/DST_Note/dst_note_7.md)
+  * [添加按键技能](/DST_Note/dst_note_7.md)
   * [添加动作](/DST_Note/dst_note_8.md)
   * [dps显示](/DST_Note/dst_note_9.md)
   * [杂项](/DST_Note/dst_note_misc.md)
@@ -42,3 +42,7 @@
 
   * [The Sim 4](/GameShare/thesim4.md)
   * [steam++](/GameShare/steam++.md)
+
+* other
+
+  * [pyinstaller](/other/pyinstaller.md)
