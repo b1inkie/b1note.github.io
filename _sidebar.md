@@ -9,7 +9,8 @@
   * [添加按键技能](/DST_Note/dst_note_7.md)
   * [添加动作](/DST_Note/dst_note_8.md)
   * [dps显示](/DST_Note/dst_note_9.md)
-  * [杂项](/DST_Note/dst_note_misc.md)
+  * [自用库](/DST_Note/dst_note_misc.md)
+  * [随记](/DST_Note/dst_note_sth.md)
   * [工具篇](/DST_Note/dst_note_tools.md)
 
 * MB Note
