@@ -138,8 +138,8 @@ TheInput:AddKeyDownHandler(GLOBAL.KEY_H, function()
                         if v and not v:HasTag('player') and v.prefab and v.components and v.components.health and not v.components.health:IsDead() and v.components.combat then 
                             -- 已筛选出范围内的目标
                             local v_x,_,v_z = v.Transform:GetWorldPosition() -- 获取目标位置
-                            local dist_btw_v_and_p = calc_dist(x,z,v_x,v_z,true) -- 计算目标与玩家的距离
-                            local des_x,des_z = findPointOnLine(v_x,v_z,x,z,dist_btw_v_and_p,dist_btw_v_and_p+2) -- 计算目标被击退后的坐标
+                            local dist_btw_v_and_p = Tools:calc_dist(x,z,v_x,v_z,true) -- 计算目标与玩家的距离
+                            local des_x,des_z = Tools:findPointOnLine(v_x,v_z,x,z,dist_btw_v_and_p,dist_btw_v_and_p+2) -- 计算目标被击退后的坐标
                             v.Physics:Teleport(des_x,0,des_z)
 
                             v.components.combat:GetAttacked(inst,20) -- 造成伤害
@@ -157,5 +157,48 @@ TheInput:AddKeyDownHandler(GLOBAL.KEY_H, function()
     end
 end)
 
+```
 
+## 彩虹变色
+
+注意返回的值r,g,b还要/255!
+
+```lua
+local function hsv_to_rgb(h, s, v)
+    local r, g, b = 0, 0, 0
+    local i = math.floor(h * 6)
+    local f = h * 6 - i
+    local p = v * (1 - s)
+    local q = v * (1 - f * s)
+    local t = v * (1 - (1 - f) * s)
+
+    local rgb_map = {
+        [0] = {v, t, p},
+        [1] = {q, v, p},
+        [2] = {p, v, t},
+        [3] = {p, q, v},
+        [4] = {t, p, v},
+        [5] = {v, p, q},
+    }
+
+    local r, g, b = unpack(rgb_map[i % 6])
+
+    return r, g, b
+end
+
+function tools:smoothRainbowColor(t)
+    -- @param t: 1,2,3,4,5,...步长可以适当增加
+    local h = t % 360 / 360  -- 将时间t映射到0到1之间的值，360度是一个完整的色轮周期
+    local s, v = 1, 1        -- 固定饱和度和明度为最大值，以获得鲜艳的颜色
+
+    -- 调用HSV到RGB转换函数
+    local r, g, b = hsv_to_rgb(h, s, v)
+
+    -- 将RGB值从[0,1]范围转换到[0,255]范围
+    r = math.floor(r * 255 + 0.5)
+    g = math.floor(g * 255 + 0.5)
+    b = math.floor(b * 255 + 0.5)
+
+    return r, g, b
+end
 ```

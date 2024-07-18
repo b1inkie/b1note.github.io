@@ -85,7 +85,7 @@ end
 
 for _,v in pairs(component_actions) do
     local testfn = function(...)
-        local actions = GLOBAL.select (-2,...)
+        local actions = GLOBAL.select(v.type=="POINT" and -3 or -2,...)
         for _,data in pairs(v.tests) do
             if data and data.testfn and data.testfn(...) then
                 data.action = string.upper(data.action)
