@@ -122,16 +122,30 @@ exe = EXE(
 
 ```python
 # 先获取根目录
-DIR_BASE = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR_INSIDE = os.path.dirname(os.path.abspath(__file__))
 # 然后拼接路径
-img_path = os.path.join(DIR_BASE, 'modresource', 'img.png')
+img_path = os.path.join(BASE_DIR_INSIDE, 'modresource', 'img.png')
 ```
 
 2. 如果你的项目,使用的文件不在exe内,比如可以使用exe提取一张图片到当前目录,你再对该图片操作,路径就可以这样写:
 
 ```python
 # 先获取根目录
-cur_dir = os.getcwd()
+BASE_DIR_OUTSIDE = os.getcwd()
 # 然后拼接路径
-img_path = os.path.join(cur_dir, 'img.png')
+img_path = os.path.join(BASE_DIR_OUTSIDE, 'img.png')
+```
+
+*常用函数*
+
+```python
+BASE_DIR_OUTSIDE = os.getcwd()
+BASE_DIR_INSIDE = os.path.dirname(os.path.abspath(__file__))
+
+def gen_dir(in_or_out=True, *args):
+    if in_or_out:
+        return os.path.join(BASE_DIR_INSIDE, *args)
+    else:
+        return os.path.join(BASE_DIR_OUTSIDE, *args)
+
 ```
