@@ -34,13 +34,46 @@
 
 ```python
 # -*- mode: python ; coding: utf-8 -*-
+import os
+
+def add_files_to_datas(base_dir, target_dir):
+    datas = []
+    for root, _, files in os.walk(base_dir):
+        # 移除 __pycache__ 目录
+        if '__pycache__' in root:
+            continue
+        
+        # 处理文件
+        for file in files:
+            # 构建源文件路径
+            src_file = os.path.join(root, file)
+            # 构建目标文件路径
+            dest_file = os.path.relpath(os.path.join(root, file), base_dir)
+            # 添加到 datas 列表
+            datas.append((src_file, os.path.join(target_dir, dest_file)))
+    return datas
+
+def gen_datas(folders):
+    datas = []
+    for folder in folders:
+        datas += add_files_to_datas(folder, folder)
+    return datas
+
+# 文件夹打包进exe的需要一并在此处填写 - lan
+folders = [
+    'funcs',
+    'images',
+    'modresource'
+]
+
+datas_add = gen_datas(folders)
 
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('modresource/*', 'modresource'),('tools/*', 'tools')], # 此处填写你需要一并打包进exe的文件夹
+    datas=[] + datas_add , 
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
