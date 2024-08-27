@@ -48,7 +48,7 @@ def add_files_to_datas(base_dir, target_dir):
             # 构建源文件路径
             src_file = os.path.join(root, file)
             # 构建目标文件路径
-            dest_file = os.path.relpath(os.path.join(root, file), base_dir)
+            dest_file = os.path.relpath(os.path.join(root), base_dir)
             # 添加到 datas 列表
             datas.append((src_file, os.path.join(target_dir, dest_file)))
     return datas
@@ -73,7 +73,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[] + datas_add , 
+    datas=[] + datas_add, # 
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -90,7 +90,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='test',
+    name='测试项目',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -103,6 +103,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='images/favicon.ico',
 )
 
 ```
